@@ -7,7 +7,121 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { phone } = req.body || {};
+    const { phone, email } = req.body || {};
+
+    if (email !== undefined) {
+
+      if (typeof email !== "string") {
+        return res.status(400).json({
+          ok: false,
+          error: "Invalid email"
+        });
+      }
+
+      const normalizedEmail =
+        email.trim().toLowerCase();
+
+      if (
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)
+      ) {
+        return res.status(400).json({
+          ok: false,
+          error: "Invalid email address"
+        });
+      }
+
+      const apiKey =
+        process.env.KLAVIYO_PRIVATE_API_KEY;
+
+      if (!apiKey) {
+        return res.status(500).json({
+          ok: false,
+          error: "Klaviyo API key is not configured"
+        });
+      }
+
+      const emailResponse = await fetch(
+        "https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs",
+        {
+          method: "POST",
+
+          headers: {
+            Authorization: `Klaviyo-API-Key ${apiKey}`,
+            Accept: "application/vnd.api+json",
+            "Content-Type": "application/vnd.api+json",
+            Revision: "2026-10-15"
+          },
+
+          body: JSON.stringify({
+            data: {
+              type: "profile-subscription-bulk-create-job",
+
+              attributes: {
+                custom_source: "Raw Gravity landing page",
+                historical_import: false,
+
+                profiles: {
+                  data: [
+                    {
+                      type: "profile",
+
+                      attributes: {
+                        email: normalizedEmail,
+
+                        subscriptions: {
+                          email: {
+                            marketing: {
+                              consent: "SUBSCRIBED"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+
+              relationships: {
+                list: {
+                  data: {
+                    type: "list",
+                    id: "W8ZzTp"
+                  }
+                }
+              }
+            }
+          })
+        }
+      );
+
+      const emailResponseText =
+        await emailResponse.text();
+
+      let emailResult = null;
+
+      try {
+        emailResult = JSON.parse(emailResponseText);
+      } catch {
+        emailResult = null;
+      }
+
+      if (!emailResponse.ok) {
+        console.error(
+          "Klaviyo email subscription error:",
+          emailResponse.status,
+          emailResponseText
+        );
+
+        return res.status(502).json({
+          ok: false,
+          error: "Email subscription failed"
+        });
+      }
+
+      return res.status(200).json({
+        ok: true
+      });
+    }
 
     if (typeof phone !== "string") {
       return res.status(400).json({
