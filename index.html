@@ -1825,6 +1825,8 @@
   }
 
   </style>
+  <script src="./pixel.js"></script>
+  <script src="./fbpixel.js"></script>
 </head>
 
 <body>
@@ -5283,7 +5285,10 @@
                   },
 
                   body: JSON.stringify({
-                    email: emailInput.value.trim()
+                    email: emailInput.value.trim(),
+                    creative:
+                      new URLSearchParams(window.location.search)
+                        .get("creative") || "unknown"
                   })
                 });
 
@@ -5306,6 +5311,33 @@
                     THANK YOU — CHECK YOUR INBOX FOR CONFIRMATION, IF REQUIRED.
                   </p>
                 `;
+
+                // TikTok: SubmitForm + Contact
+                const pixelId = new URLSearchParams(
+                  window.location.search
+                ).get("pixel");
+
+                if (pixelId && typeof ttq !== "undefined") {
+                  ttq.instance(pixelId).track("SubmitForm", {
+                    content_name: "Coupon Code Revealed"
+                  });
+
+                  ttq.instance(pixelId).track("Contact", {
+                    content_type: "promo_code",
+                    content_name: "Coupon Code Revealed"
+                  });
+                }
+
+                // Meta: Lead + Contact
+                if (typeof fbq === "function") {
+                  fbq("track", "Lead", {
+                    content_name: "25% OFF Promo Code",
+                    currency: "USD",
+                    value: 0
+                  });
+
+                  fbq("track", "Contact");
+                }
 
               } catch (error) {
 
