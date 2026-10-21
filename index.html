@@ -4701,38 +4701,20 @@
 
       });
 
-    /* =========================
-      SCROLL TO FORM
-      ========================= */
+        /* =========================
+       AMAZON CTA NAVIGATION
+       ========================= */
 
       document
         .querySelectorAll("[data-scroll-form]")
         .forEach(button => {
-
-          button.addEventListener(
-            "click",
-            () => {
-
-              const isDesktop =
-                window.matchMedia(
-                  "(min-width: 1024px)"
-                ).matches;
-
-              const gate =
-                isDesktop
-                  ? document.getElementById("desktopGate")
-                  : document.getElementById("gate");
-
-              if (!gate) return;
-
-              gate.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-              });
-
-            }
-          );
-
+          button.addEventListener("click", () => {
+            window.open(
+              AMAZON_URL,
+              "_blank",
+              "noopener,noreferrer"
+            );
+          });
         });
 
   </script>
