@@ -1770,8 +1770,15 @@
     }
 
     .promo-percent {
-      flex-basis: 100%;
-      font-size: clamp(96px, 34vw, 150px);
+      flex: 0 0 100%;
+      display: block;
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+      font-size: clamp(64px, 24vw, 104px);
+      line-height: .9;
+      letter-spacing: -.07em;
+      white-space: nowrap;
     }
 
     .promo-copy {
@@ -4707,7 +4714,7 @@
               ×
             </span>
 
-            <span>Take My Muffin</span>
+            <span style="flex:0 0 100%">Take My Muffin</span>
 
           </div>
 
