@@ -611,26 +611,24 @@
     }
 
     .ingredients-list {
-      display: flex;
-      flex-direction: column;
-
-      gap: 18px;
-
-      padding: 12px 20px 28px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 12px;
+      row-gap: 20px;
+      padding: 12px 16px 28px;
     }
 
     .ingredient-point {
-      display: flex;
-      align-items: center;
-
-      gap: 14px;
+      align-items: flex-start;
+      gap: 8px;
+      min-width: 0;
     }
 
     .ingredient-dot {
       flex: 0 0 auto;
 
-      width: 10px;
-      height: 10px;
+      width: 8px;
+      height: 8px;
 
       border-radius: 50%;
 
@@ -642,22 +640,13 @@
     }
 
     .ingredient-line {
-      flex: 0 0 clamp(20px, 4vw, 56px);
-
-      height: 1px;
-
-      background:
-        linear-gradient(
-          90deg,
-          var(--red-bright),
-          rgba(74,101,114,.5)
-        );
+      display: none;
     }
 
     .ingredient-text {
       font-family: Archivo, Arial, sans-serif;
 
-      font-size: 16px;
+      font-size: 12px;
       font-weight: 800;
 
       line-height: 1.15;
